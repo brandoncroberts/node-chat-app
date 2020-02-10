@@ -11,7 +11,13 @@ const chatSubmit = e => {
 
   const message = e.target.elements.message.value;
 
-  socket.emit("sendMessage", message);
+  socket.emit("sendMessage", message, error => {
+    if (error) {
+      return console.log(error);
+    }
+
+    console.log("Message delivered!");
+  });
 };
 
 form.addEventListener("submit", chatSubmit);
@@ -28,6 +34,8 @@ sendLocation.addEventListener("click", () => {
       longitude: position.coords.longitude
     };
 
-    socket.emit("sendLocation", coordinates);
+    socket.emit("sendLocation", coordinates, ackknowledgement => {
+      console.log("Location Shared!", ackknowledgement);
+    });
   });
 });

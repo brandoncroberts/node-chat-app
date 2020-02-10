@@ -13,8 +13,18 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 
 app.use(express.static(publicDirectoryPath));
 
-io.on("connection", () => {
+let count = 0;
+
+io.on("connection", socket => {
   console.log("New Websocket connection");
+
+  socket.emit("countUpdated", count);
+
+  socket.on("increment", () => {
+    count++;
+    // io.emit emits the event to every connection, where as socket.emit just emits it to the single connection
+    io.emit("countUpdated", count);
+  });
 });
 
 server.listen(port, () => {

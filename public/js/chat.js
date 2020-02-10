@@ -1,11 +1,16 @@
 const socket = io();
 
-socket.on("countUpdated", count => {
-  console.log("the count is", count);
-});
+socket.on("message", message => console.log(message));
 
-document.querySelector("#increment").addEventListener("click", () => {
-  console.log("clicked");
+const form = document.getElementById("chat-form");
+const input = document.getElementById("chat-input");
 
-  socket.emit("increment");
-});
+const chatSubmit = e => {
+  e.preventDefault();
+
+  const message = e.target.elements.message.value;
+
+  socket.emit("sendMessage", message);
+};
+
+form.addEventListener("submit", chatSubmit);

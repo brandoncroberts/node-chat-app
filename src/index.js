@@ -13,17 +13,16 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 
 app.use(express.static(publicDirectoryPath));
 
-let count = 0;
+let message = "You are awesome";
 
 io.on("connection", socket => {
   console.log("New Websocket connection");
+  socket.emit("message", message);
+  socket.broadcast.emit("message", "A new user has joined!");
+  socket.on("sendMessage", message => io.emit("message", message));
 
-  socket.emit("countUpdated", count);
-
-  socket.on("increment", () => {
-    count++;
-    // io.emit emits the event to every connection, where as socket.emit just emits it to the single connection
-    io.emit("countUpdated", count);
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left");
   });
 });
 
